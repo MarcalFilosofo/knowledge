@@ -1,12 +1,17 @@
 module.exports = app => {
-    const { existsOrError, notExistsOrError} = app.api.validation
+    const { existsOrError, notExistsOrError } = app.api.validation
 
     const save = (req, res) => {
-        const category = { ...req.body}
+        const category = {
+            id: req.body.id,
+            name: req.body.name,
+            parentId: req.body.parentId
+        }
+        
         if(req.params.id) category.id = req.params.id
 
         try {
-            existsOrError(category.name, "Nome não informado.")
+            existsOrError(category.name, 'Nome não informado')
         } catch(msg) {
             return res.status(400).send(msg)
         }
@@ -26,24 +31,23 @@ module.exports = app => {
     }
 
     const remove = async (req, res) => {
-        try{
-            existsOrError(req.params.id, "Código da Categoria não informado.")
+        try {
+            existsOrError(req.params.id, 'Código da Categoria não informado.')
 
             const subcategory = await app.db('categories')
-                .where({ parentId: req.params.Id})
-            
+                .where({ parentId: req.params.id })
             notExistsOrError(subcategory, 'Categoria possui subcategorias.')
-            
+
             const articles = await app.db('articles')
-                .where({ categoryId: req.params.id})
+                .where({ categoryId: req.params.id })
             notExistsOrError(articles, 'Categoria possui artigos.')
-        
+
             const rowsDeleted = await app.db('categories')
-                .where({ id: req.params.id}).del()
+                .where({ id: req.params.id }).del()
             existsOrError(rowsDeleted, 'Categoria não foi encontrada.')
-        
+
             res.status(204).send()
-        }catch(msg) {
+        } catch(msg) {
             res.status(400).send(msg)
         }
     }
@@ -58,12 +62,12 @@ module.exports = app => {
             let path = category.name
             let parent = getParent(categories, category.parentId)
 
-            while(parent){
+            while(parent) {
                 path = `${parent.name} > ${path}`
                 parent = getParent(categories, parent.parentId)
             }
 
-            return { ...category, path}
+            return { ...category, path }
         })
 
         categoriesWithPath.sort((a, b) => {
@@ -104,5 +108,6 @@ module.exports = app => {
             .then(categories => res.json(toTree(categories)))
             .catch(err => res.status(500).send(err))
     }
-    return { save, remove, get, getById, getTree}
+
+    return { save, remove, get, getById, getTree }
 }
