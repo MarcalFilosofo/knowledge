@@ -1,46 +1,41 @@
 <template>
     <div class="article-admin">
         <b-form>
-
             <input id="article-id" type="hidden" v-model="article.id" />
             <b-form-group label="Nome:" label-for="article-name">
                 <b-form-input id="article-name" type="text"
                     v-model="article.name" required
                     :readonly="mode === 'remove'"
-                    placeholder="Informe o Nome do artigo..." />
+                    placeholder="Informe o Nome do Artigo..." />
             </b-form-group>
-            
-            <b-form-group label="Descrição:" label-for="article-description">
+            <b-form-group label="Descrição" label-for="article-description">
                 <b-form-input id="article-description" type="text"
                     v-model="article.description" required
                     :readonly="mode === 'remove'"
-                    placeholder="Informe o Nome do artigo..." />
+                    placeholder="Informe o Nome do Artigo..." />
             </b-form-group>
-            
-            <b-form-group label="Imagem (URL):" label-for="article-imageUrl">
+            <b-form-group v-if="mode === 'save'"
+                label="Imagem (URL):" label-for="article-imageUrl">
                 <b-form-input id="article-imageUrl" type="text"
                     v-model="article.imageUrl" required
                     :readonly="mode === 'remove'"
-                    placeholder="Informe a URL da imagem..." />
+                    placeholder="Informe a URL da Imagem..." />
             </b-form-group>
-
-            <b-form-group v-if="mode === 'save'" label="Categoria:" 
-                label-for="article-categoryId">
+            <b-form-group v-if="mode === 'save'" 
+                label="Categoria:" label-for="article-categoryId">
                 <b-form-select id="article-categoryId"
                     :options="categories" v-model="article.categoryId" />
             </b-form-group>
-
-            <b-form-group v-if="mode === 'save'" label="Autor:" 
-                label-for="article-userId">
+            <b-form-group v-if="mode === 'save'" 
+                label="Autor:" label-for="article-userId">
                 <b-form-select id="article-userId"
                     :options="users" v-model="article.userId" />
             </b-form-group>
-            
-            <b-form-group label="Conteúdo:" label-for="article-content">
+            <b-form-group v-if="mode === 'save'"
+                label="Conteúdo" label-for="article-content">
                 <VueEditor v-model="article.content"
-                    placeholder="Informe o conteúdo do artigo" />
+                    placeholder="Informe o Conteúdo do Artigo..." />
             </b-form-group>
-
             <b-button variant="primary" v-if="mode === 'save'"
                 @click="save">Salvar</b-button>
             <b-button variant="danger" v-if="mode === 'remove'"
@@ -58,9 +53,7 @@
                 </b-button>
             </template>
         </b-table>
-        <b-pagination size="md" v-model="page"
-            :total-rows="count" :per-page="limit"
-            ></b-pagination>
+        <b-pagination size="md" v-model="page" :total-rows="count" :per-page="limit" />
     </div>
 </template>
 
@@ -78,7 +71,7 @@ export default {
             article: {},
             articles: [],
             categories: [],
-            user: [],
+            users: [],
             page: 1,
             limit: 0,
             count: 0,
@@ -93,8 +86,7 @@ export default {
     methods: {
         loadArticles() {
             const url = `${baseApiUrl}/articles?page=${this.page}`
-            axios.get(url).then(res => { 
-                // this.articles = res.data
+            axios.get(url).then(res => {
                 this.articles = res.data.data
                 this.count = res.data.count
                 this.limit = res.data.limit
@@ -126,30 +118,29 @@ export default {
         },
         loadArticle(article, mode = 'save') {
             this.mode = mode
-            // this.article = { ...article }
             axios.get(`${baseApiUrl}/articles/${article.id}`)
                 .then(res => this.article = res.data)
         },
-        loadCategories(){
-            const url = `${baseApiUrl}/cateories`
+        loadCategories() {
+            const url = `${baseApiUrl}/categories`
             axios.get(url).then(res => {
                 this.categories = res.data.map(category => {
-                    return { value: category.id, text: category.path}
+                    return { value: category.id, text: category.path }
                 })
             })
         },
-        loadUsers(){
+        loadUsers() {
             const url = `${baseApiUrl}/users`
             axios.get(url).then(res => {
                 this.users = res.data.map(user => {
-                    return { value: user.id, text: `${user.name} - ${user.email}`}
+                    return { value: user.id, text: `${user.name} - ${user.email}` }
                 })
             })
         }
     },
     watch: {
-        page(){
-            this.loadArticle()
+        page() {
+            this.loadArticles()
         }
     },
     mounted() {

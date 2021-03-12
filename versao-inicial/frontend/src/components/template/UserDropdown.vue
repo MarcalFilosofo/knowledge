@@ -7,28 +7,31 @@
             </div>
             <i class="fa fa-angle-down"></i>
         </div>
-
         <div class="user-dropdown-content">
-            <router-link to="/admin">
-                <i class="fa fa-cogs"></i>
-                Administração
+            <router-link to="/admin" v-if="user.admin">
+                <i class="fa fa-cogs"></i> Administração
             </router-link>
-            <router-link to="/">
-                <i class="fa fa-sing-out"></i>
-                Sair
-            </router-link>
+            <a href @click.prevent="logout"><i class="fa fa-sign-out"></i> Sair</a>
         </div>
     </div>
 </template>
 
 <script>
+import { userKey } from '@/global'
 import { mapState } from 'vuex'
 import Gravatar from 'vue-gravatar'
 
 export default {
     name: 'UserDropdown',
     components: { Gravatar },
-    computed: mapState(['user'])
+    computed: mapState(['user']),
+    methods: {
+        logout() {
+            localStorage.removeItem(userKey)
+            this.$store.commit('setUser', null)
+            this.$router.push({ name: 'auth' })
+        }
+    }
 }
 </script>
 
@@ -60,6 +63,7 @@ export default {
         border-radius: 5px;
     }
 
+
     .user-dropdown-content {
         position: absolute;
         right: 0px;
@@ -68,9 +72,11 @@ export default {
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         padding: 10px;
         z-index: 1;
+
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
+
         visibility: hidden;
         opacity: 0;
         transition: visibility 0s, opacity 0.5s linear;
@@ -92,5 +98,4 @@ export default {
         color: #000;
         background-color: #EDEDED;
     }
-
 </style>

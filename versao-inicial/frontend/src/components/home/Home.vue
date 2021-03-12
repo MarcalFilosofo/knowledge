@@ -1,47 +1,42 @@
 <template>
     <div class="home">
-        <PageTitle 
-            icon="fa fa-home"
-            main="Dashboard"
-            sub="Base de Conhecimento"
-        />
+        <PageTitle icon="fa fa-home" main="Dashboard"
+            sub="Base de Conhecimento" />
         <div class="stats">
-            <Stats title="Categorias" :value="stat.categories"
+            <Stat title="Categorias" :value="stat.categories"
                 icon="fa fa-folder" color="#d54d50" />
-            <Stats title="Artigos" :value="stat.articles"
+            <Stat title="Artigos" :value="stat.articles"
                 icon="fa fa-file" color="#3bc480" />
-            <Stats title="Usuários" :value="stat.users"
+            <Stat title="Usuários" :value="stat.users"
                 icon="fa fa-user" color="#3282cd" />
         </div>
     </div>
 </template>
 
 <script>
-import PageTitle from '@/components/template/PageTitle'
+import PageTitle from '../template/PageTitle'
 import Stat from './Stat'
 import axios from 'axios'
-import { baseApiUrl} from '@/global'
+import { baseApiUrl } from '@/global'
 
 export default {
     name: 'Home',
     components: { PageTitle, Stat },
-    data: function(){
-        return{ 
+    data: function() {
+        return {
             stat: {}
         }
     },
     methods: {
-        getStats(){
-            axios.get(`${baseApiUrl}/stats`)
-                .then(res => this.stat = res.data)
+        getStats() {
+            axios.get(`${baseApiUrl}/stats`).then(res => this.stat = res.data)
         }
     },
-    mouted(){
+    mounted() {
         this.getStats()
     }
 }
 </script>
-
 
 <style>
     .stats {

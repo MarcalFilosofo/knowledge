@@ -1,10 +1,9 @@
 const admin = require('./admin')
 
 module.exports = app => {
-    app.post('/singup', app.api.user.save)
-    app.post('/singin', app.api.auth.singin)
+    app.post('/signup', app.api.user.save)
+    app.post('/signin', app.api.auth.signin)
     app.post('/validateToken', app.api.auth.validateToken)
-
 
     app.route('/users')
         .all(app.config.passport.authenticate())
@@ -22,6 +21,7 @@ module.exports = app => {
         .get(admin(app.api.category.get))
         .post(admin(app.api.category.save))
 
+    // Cuidado com ordem! Tem que vir antes de /categories/:id
     app.route('/categories/tree')
         .all(app.config.passport.authenticate())
         .get(app.api.category.getTree)

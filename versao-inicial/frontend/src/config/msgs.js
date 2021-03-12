@@ -6,14 +6,14 @@ Vue.use(Toasted, {
     duration: 3000
 })
 
-Vue.toasted.resgister(
+Vue.toasted.register(
     'defaultSuccess',
-    payload => !payload.msg ? 'Operação realizado com sucesso!' : payload.msg,
-    {type: 'success', icon: 'check'}
+    payload => !payload.msg ? 'Operação realidada com sucesso!' : payload.msg,
+    { type: 'success', icon: 'check' }
 )
 
-Vue.toasted.resgister(
+Vue.toasted.register(
     'defaultError',
-    payload => !payload.msg ? 'Opss... Erro inesperado.' : payload.msg,
-    {type: 'error', icon: 'times'}
+    payload => !payload.msg ? 'Oops.. Erro inesperado.' : payload.msg,
+    { type : 'error', icon : 'times' }
 )
